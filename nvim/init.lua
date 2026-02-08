@@ -61,15 +61,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.cmd("NvimTreeOpen")
     vim.cmd("wincmd l")
-    vim.cmd("vsplit | terminal aichat")
-    vim.cmd("wincmd h")
   end,
 })
 
 -- [5] キーマップ -------------------------------------------------------------
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
-
-vim.keymap.set('n', '<leader>a', ':vsplit | terminal aichat<CR>i', { silent = true })
 
 vim.keymap.set('n', '<leader>q', ':qa<CR>', { silent = true })
 

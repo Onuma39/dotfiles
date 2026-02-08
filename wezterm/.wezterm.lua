@@ -4,26 +4,18 @@
 -- - [2] 外観設定 (ウィンドウ / フォント)
 -- - [3] 外観設定 (タブバー / 背景)
 -- - [4] キー操作 (ショートカット)
+-- - [5] 起動時の設定 (自動分割 + Claudeコード起動)
 -- ============================================================================
 
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
--- [1] 接続設定 (WSL / PowerShell 切り替え) -------------------------------
-local domains = wezterm.default_wsl_domains()
-local has_almalinux = false
+-- [1] 接続設定 (PowerShell) --------------------------------------------
+config.default_prog = { 'powershell.exe' }
 
-for _, domain in ipairs(domains) do
-    if domain.name == 'WSL:AlmaLinux-9' then
-        has_almalinux = true
-        break
-    end
-end
-
-if has_almalinux then
-    config.default_domain = 'WSL:AlmaLinux-9'
-else
-    config.default_prog = { 'powershell.exe' }
+local home = os.getenv('USERPROFILE')
+if home then
+  config.default_cwd = home .. '/Documents/01_Program'
 end
 
 -- [2] 外観設定 (ウィンドウ / フォント) ---------------------------------
@@ -82,5 +74,18 @@ config.keys = {
     action = wezterm.action.CloseCurrentTab { confirm = false },
   },
 }
+
+-- [5] 起動時の設定 (自動分割 + Claudeコード起動) --------------------------
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+  wezterm.sleep_ms(100)
+  pane:split {
+    direction = 'Right',
+    size = 0.33,
+    args = { 'powershell.exe', '-NoExit', '-Command', 'claude' },
+  }
+  pane:activate()
+end)
 
 return config
