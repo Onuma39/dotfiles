@@ -11,7 +11,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 -- [1] 接続設定 (PowerShell) --------------------------------------------
-config.default_prog = { 'powershell.exe' }
+config.default_prog = { 'pwsh.exe', '-NoLogo' }
 
 local home = os.getenv('USERPROFILE')
 if home then
